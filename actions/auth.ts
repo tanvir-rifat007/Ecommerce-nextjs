@@ -1,9 +1,8 @@
 "use server";
 
-import { signIn } from "@/auth";
+import { signIn, signOut } from "@/auth";
 import { signInFormSchema } from "@/lib/validator";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
-import { redirect } from "next/navigation";
 
 export async function signInWithCredentials(
   prevState: any,
@@ -28,4 +27,8 @@ export async function signInWithCredentials(
       message: "Invalid Credentials!",
     };
   }
+}
+
+export async function signOutCurrentUser() {
+  return await signOut();
 }

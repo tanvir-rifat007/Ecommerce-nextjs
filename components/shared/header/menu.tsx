@@ -14,6 +14,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import UserButton from "./userButton";
+import { SessionProvider } from "next-auth/react";
 
 const Menu = () => {
   return (
@@ -26,14 +28,13 @@ const Menu = () => {
             Cart
           </Link>
         </Button>
-        <Button asChild>
-          <Link href="/sign-in">
-            <UserIcon />
-            Sign In
-          </Link>
-        </Button>
+        <SessionProvider>
+          {" "}
+          <UserButton />
+        </SessionProvider>
       </nav>
 
+      {/* mobile or small device  */}
       <nav className="md:hidden">
         <Sheet>
           <SheetTrigger className="align-middle">
@@ -49,12 +50,10 @@ const Menu = () => {
                 Cart
               </Link>
             </Button>
-            <Button asChild>
-              <Link href="/sign-in">
-                <UserIcon />
-                Sign In
-              </Link>
-            </Button>
+            <SessionProvider>
+              <UserButton />
+            </SessionProvider>
+
             <SheetDescription></SheetDescription>
           </SheetContent>
         </Sheet>
