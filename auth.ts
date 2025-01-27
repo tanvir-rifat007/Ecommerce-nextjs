@@ -7,6 +7,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "./db/db";
 
 export const config = {
+  secret: process.env.AUTH_SECRET,
   pages: {
     signIn: "/sign-in",
     error: "/sign-in",
