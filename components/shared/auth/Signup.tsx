@@ -5,25 +5,30 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import React, { useActionState } from "react";
 import SubmitBtn from "./SubmitBtn";
-import { signInWithCredentials } from "@/actions/auth";
+import { signInWithCredentials, signUpWithCredentials } from "@/actions/auth";
 import { cn } from "@/lib/utils";
-import { useSearchParams } from "next/navigation";
 
 const initialState = {
   success: false,
   message: "",
 };
 
-const Signin = () => {
-  const [state, action] = useActionState(signInWithCredentials, initialState);
-
-  // const searchParams = useSearchParams();
-  // const callbackUrl = searchParams.get("callbackUrl") || "/";
+const Signup = () => {
+  const [state, action] = useActionState(signUpWithCredentials, initialState);
 
   return (
     <form action={action}>
-      {/* <input type="hidden" name="callbackUrl" value={callbackUrl} /> */}
       <div className="space-y-6">
+        <div>
+          <Label htmlFor="name">Name</Label>
+          <Input
+            id="name"
+            name="name"
+            required
+            type="text"
+            autoComplete="name"
+          />
+        </div>
         <div>
           <Label htmlFor="email">Email</Label>
           <Input
@@ -45,13 +50,23 @@ const Signin = () => {
           />
         </div>
         <div>
-          <SubmitBtn label="sign in" />
+          <Label htmlFor="confirmPassword">Confirm Password</Label>
+          <Input
+            id="confirmPassword"
+            name="confirmPassword"
+            required
+            type="password"
+            autoComplete="current-password"
+          />
+        </div>
+        <div>
+          <SubmitBtn label="sign up" />
         </div>
 
         <div className="text-sm text-center text-muted-foreground">
-          Don&apos;t have an account?{" "}
-          <Link target="_self" className="link" href="/sign-up">
-            Sign Up
+          Already have an account?{" "}
+          <Link target="_self" className="link" href="/sign-in">
+            Sign In
           </Link>
         </div>
 
@@ -70,4 +85,4 @@ const Signin = () => {
   );
 };
 
-export default Signin;
+export default Signup;

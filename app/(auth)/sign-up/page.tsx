@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import Signin from "@/components/shared/auth/Signin";
+import Signup from "@/components/shared/auth/Signup";
 import {
   Card,
   CardContent,
@@ -14,10 +14,10 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
-  title: "Sign In",
+  title: "Sign Up",
 };
 
-const SigninPage = async ({
+const SignupPage = async ({
   searchParams,
 }: {
   searchParams: Promise<{
@@ -45,17 +45,17 @@ const SigninPage = async ({
               alt={`${APP_NAME} logo`}
             />
           </Link>
-          <CardTitle className="text-center">Sign In</CardTitle>
+          <CardTitle className="text-center">Sign Up</CardTitle>
           <CardDescription className="text-center">
-            Select a method to sign in to your account
+            Create an account to access all features
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Signin />
+          <Signup />
         </CardContent>
       </Card>
     </div>
   );
 };
 
-export default SigninPage;
+export default SignupPage;
