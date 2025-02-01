@@ -12,6 +12,7 @@ import {
 import { signOutCurrentUser } from "@/actions/auth";
 import { useTransition } from "react";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 
 const UserButton = () => {
   const session = useSession();
@@ -27,18 +28,29 @@ const UserButton = () => {
   }
 
   const firstInitial = session.data?.user?.name?.charAt(0).toUpperCase() ?? "";
+  const googleProfile = session.data?.user?.image;
 
   return (
     <div className="flex gap-2 items-center">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <div className="flex items-center">
-            <Button
-              variant="ghost"
-              className="relative w-8 h-8 rounded-full ml-2 flex items-center justify-center bg-gray-300"
-            >
-              {firstInitial}
-            </Button>
+            {googleProfile ? (
+              <Image
+                src={googleProfile}
+                alt="Profile"
+                width={32}
+                height={32}
+                className="rounded-full"
+              />
+            ) : (
+              <Button
+                variant="ghost"
+                className="relative w-8 h-8 rounded-full ml-2 flex items-center justify-center bg-gray-300"
+              >
+                {firstInitial}
+              </Button>
+            )}
           </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56" align="end" forceMount>

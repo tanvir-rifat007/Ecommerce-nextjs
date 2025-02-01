@@ -5,6 +5,9 @@ import CredentialsProvider from "next-auth/providers/credentials";
 
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "./db/db";
+import Google from "next-auth/providers/google";
+import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 
 export const config = {
   secret: process.env.AUTH_SECRET,
@@ -25,6 +28,7 @@ export const config = {
         },
         password: { type: "password" },
       },
+
       async authorize(credentials) {
         if (credentials == null) return null;
 
@@ -54,6 +58,8 @@ export const config = {
         return null;
       },
     }),
+
+    Google,
   ],
   callbacks: {
     async session({ session, user, trigger, token }: any) {
@@ -62,7 +68,6 @@ export const config = {
       session.user.role = token.role;
       session.user.name = token.name;
 
-      console.log("session", session, "token", token);
       // If there is an update, set the name on the session
       if (trigger === "update") {
         session.user.name = user.name;
@@ -95,6 +100,28 @@ export const config = {
       }
 
       return token;
+    },
+
+    authorized({ request, auth }: any) {
+      if (!request.cookies.get("sessionCartId")) {
+        const sessionCartId = crypto.randomUUID();
+
+        // clone the request headers
+        const headers = new Headers(request.headers);
+
+        // add headers to the response
+        const response = NextResponse.next({
+          request: {
+            headers: headers,
+          },
+        });
+
+        response.cookies.set("sessionCartId", sessionCartId);
+
+        return response;
+      } else {
+        return true;
+      }
     },
   },
 } satisfies NextAuthConfig;

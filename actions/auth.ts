@@ -5,6 +5,7 @@ import { prisma } from "@/db/db";
 import { signInFormSchema, signUpFormSchema } from "@/lib/validator";
 import { hashSync } from "bcrypt-ts-edge";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
+import { memoize } from "nextjs-better-unstable-cache";
 
 export async function signInWithCredentials(
   prevState: any,
@@ -93,3 +94,18 @@ export async function signUpWithCredentials(
     };
   }
 }
+
+export const getUserById = memoize(
+  async (id: string) => {
+    return await prisma.user.findUnique({
+      where: {
+        id: id,
+      },
+    });
+  },
+  {
+    persist: true,
+    revalidateTags: (id: string) => [`user:${id}`],
+    log: ["datacache", "dedupe", "verbose"],
+  }
+);

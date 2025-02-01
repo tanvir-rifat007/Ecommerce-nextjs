@@ -3,11 +3,12 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import React, { useActionState } from "react";
+import React, { useActionState, useTransition } from "react";
 import SubmitBtn from "./SubmitBtn";
 import { signInWithCredentials } from "@/actions/auth";
 import { cn } from "@/lib/utils";
-import { useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { signIn } from "next-auth/react";
 
 const initialState = {
   success: false,
@@ -16,6 +17,8 @@ const initialState = {
 
 const Signin = () => {
   const [state, action] = useActionState(signInWithCredentials, initialState);
+
+  const [isPending, startTransition] = useTransition();
 
   // const searchParams = useSearchParams();
   // const callbackUrl = searchParams.get("callbackUrl") || "/";
@@ -46,6 +49,10 @@ const Signin = () => {
         </div>
         <div>
           <SubmitBtn label="sign in" />
+        </div>
+
+        <div>
+          <Button onClick={() => signIn("google")}>Sign in with Google</Button>
         </div>
 
         <div className="text-sm text-center text-muted-foreground">

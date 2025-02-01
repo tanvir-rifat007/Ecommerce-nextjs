@@ -1,9 +1,13 @@
+import { getMyCart } from "@/actions/cart";
 import { getProductBySlug, getProducts } from "@/actions/product";
+import { auth } from "@/auth";
+import AddToCart from "@/components/shared/product/addToCart";
 import ProductImages from "@/components/shared/product/ProductImages";
 import ProductPrice from "@/components/shared/product/ProductPrice";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import React from "react";
 
@@ -22,6 +26,20 @@ const ProductPage = async ({
 }) => {
   const { slug } = await params;
   const product = await getProductBySlug(slug);
+
+  const cart = await getMyCart();
+
+  // console.log(cart);
+
+  const newCart = {
+    ...cart,
+    itemsPrice: String(cart?.itemsPrice),
+    shippingPrice: String(cart?.shippingPrice),
+    taxPrice: String(cart?.taxPrice),
+    totalPrice: String(cart?.totalPrice),
+  };
+
+  // console.log("newCart", newCart);
 
   if (!product) {
     return notFound();
@@ -79,7 +97,17 @@ const ProductPage = async ({
                 </div>
                 {product.stock > 0 && (
                   <div className=" flex-center">
-                    <Button className="w-full">Add to cart</Button>
+                    <AddToCart
+                      cart={newCart}
+                      item={{
+                        productId: product.id,
+                        name: product.name,
+                        price: String(product.price),
+                        slug: product.slug,
+                        image: product.images[0],
+                        qty: 1,
+                      }}
+                    />
                   </div>
                 )}
               </CardContent>
