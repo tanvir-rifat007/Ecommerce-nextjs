@@ -28,11 +28,13 @@ const CartTable = ({ cart }: Cart) => {
   const router = useRouter();
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
-  console.log(cart);
+
+  console.log("cart", cart);
+
   return (
     <div>
       <h1 className="py-4 h2-bold">Shopping Cart</h1>
-      {!cart || cart.items.length === 0 ? (
+      {!cart || cart?.items?.length === 0 ? (
         <div>
           Cart is empty. <Link href="/">Go shopping</Link>
         </div>
@@ -51,7 +53,7 @@ const CartTable = ({ cart }: Cart) => {
                   </TableHeader>
 
                   <TableBody>
-                    {cart.items.map((item) => (
+                    {cart?.items?.map((item) => (
                       <TableRow key={item.slug}>
                         <TableCell>
                           <Link
@@ -132,10 +134,12 @@ const CartTable = ({ cart }: Cart) => {
           <Card>
             <CardContent className="p-4 gap-4">
               <div className="pb-3 text-xl">
-                Subtotal ({cart.items.reduce((a, c) => a + c.qty, 0)}):
+                Subtotal ({cart?.items?.reduce((a, c) => a + c.qty, 0)}):
                 <span className="font-bold">
                   {" "}
-                  {formatCurrency(cart.itemsPrice)}
+                  {cart.itemsPrice === "undefined"
+                    ? formatCurrency(0)
+                    : formatCurrency(cart.itemsPrice)}
                 </span>
               </div>
 

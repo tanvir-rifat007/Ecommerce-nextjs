@@ -39,6 +39,8 @@ const ProductPage = async ({
     totalPrice: String(cart?.totalPrice),
   };
 
+  console.log("newCart", newCart);
+
   // console.log("newCart", newCart);
 
   if (!product) {

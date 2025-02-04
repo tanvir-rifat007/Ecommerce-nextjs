@@ -28,6 +28,8 @@ export const addToCart = async (data: CartItem) => {
   try {
     const sessionCartId = (await cookies()).get("sessionCartId")?.value;
 
+    console.log("sessionCartId", sessionCartId);
+
     if (!sessionCartId) {
       throw new Error("Session cart id not found");
     }
@@ -37,6 +39,8 @@ export const addToCart = async (data: CartItem) => {
     const session = await auth();
 
     const userId = session?.user?.id ? session.user.id : undefined;
+
+    console.log("userId", userId);
 
     // get user cart from db using sessionCartId if the user is guest user and userId if the user is logged in:
 

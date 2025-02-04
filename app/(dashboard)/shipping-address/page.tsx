@@ -1,6 +1,8 @@
 import { getUserById } from "@/actions/auth";
 import { getMyCart } from "@/actions/cart";
 import { auth } from "@/auth";
+import CheckoutSteps from "@/components/shared/checkoutSteps/checkoutSteps";
+import ShippingAddress from "@/components/shared/shippingAddress/shippingAddress";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 
@@ -23,7 +25,12 @@ const ShippingAddressPage = async () => {
 
   const user = await getUserById(userId);
 
-  return <>Shipping Page</>;
+  return (
+    <>
+      <CheckoutSteps current={1} />
+      <ShippingAddress address={user?.address as ShippingAddress} />
+    </>
+  );
 };
 
 export default ShippingAddressPage;

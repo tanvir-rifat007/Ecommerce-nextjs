@@ -80,6 +80,7 @@ export const config = {
       // Assign user fields to token
       // this user from the database
       if (user) {
+        token.id = user.id;
         token.role = user.role;
 
         // If user has no name, use email as their default name
@@ -94,6 +95,32 @@ export const config = {
         }
       }
 
+      if (trigger === "signIn" || trigger === "signUp") {
+        const sessionCartId = (await cookies()).get("sessionCartId")?.value;
+
+        if (sessionCartId) {
+          // get the cart from the session as a guest
+          const sessionCart = await prisma.cart.findFirst({
+            where: {
+              sessionCartId: sessionCartId,
+            },
+          });
+
+          if (sessionCart) {
+            // Overwrite any existing user cart
+            await prisma.cart.deleteMany({
+              where: { userId: user.id },
+            });
+
+            // Assign the guest cart to the logged-in user
+            await prisma.cart.update({
+              where: { id: sessionCart.id },
+              data: { userId: user.id },
+            });
+          }
+        }
+      }
+
       // Handle session updates (e.g., name change)
       if (session?.user.name && trigger === "update") {
         token.name = session.user.name;
@@ -103,6 +130,23 @@ export const config = {
     },
 
     authorized({ request, auth }: any) {
+      // Array of regex patterns of protected paths
+      const protectedPaths = [
+        /\/shipping-address/,
+        /\/payment-method/,
+        /\/place-order/,
+        /\/profile/,
+        /\/user\/(.*)/,
+        /\/order\/(.*)/,
+        /\/admin/,
+      ];
+
+      // Get pathname from the req URL object
+      const { pathname } = request.nextUrl;
+
+      // Check if user is not authenticated and on a protected path
+      if (!auth && protectedPaths.some((p) => p.test(pathname))) return false;
+
       if (!request.cookies.get("sessionCartId")) {
         const sessionCartId = crypto.randomUUID();
 
